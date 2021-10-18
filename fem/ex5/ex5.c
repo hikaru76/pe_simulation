@@ -183,7 +183,7 @@ void glMotion( int _x, int _y)
 
 			//[TODO5ヒント]
 			//inputに変位ベクトルを設定すれば指定した変位を入力できる
-
+			input.x = 5; input.y = 5; input.z = 5;	
 			//境界条件が設定されていればマウスを動かすたびに解析を実行
 			if( mesh.is_boundary_on == 1){
 				//境界条件を設定
@@ -195,7 +195,7 @@ void glMotion( int _x, int _y)
 
 				//[TODO5ヒント]
 				//指定した座標のミーゼス応力を取得
-				setVec3( &pos, 0, 0, 0 );
+				setVec3( &pos, 0, 10, 0 );
 				ms_at = getMisessStressAt( &mesh, pos );
 				//結果をコンソールに表示
 				printf( "Max MS = %3.3f, MS at (%2.1f, %2.1f, %2.1f)= %3.3f\r", output, pos.x, pos.y, pos.z, ms_at);
@@ -277,7 +277,12 @@ int main( int _argc, char *_argv[] )
 	//[TODO5ヒント]
 	//固定境界を設定するにはmesh.node[ #ID ].state = NODE_FIXED;
 	//変位境界を設定するにはmesh.node[ #ID ].state = NODE_DEFORM;
-
+	mesh.node[253].state = NODE_FIXED;
+	mesh.node[330].state = NODE_FIXED;
+	mesh.node[332].state = NODE_FIXED;
+	mesh.node[333].state = NODE_FIXED;
+	mesh.node[342].state = NODE_FIXED;
+	mesh.node[19].state = NODE_DEFORM;
 	//初期ウィンドウサイズの初期化
 	width = WINDOW_SIZE_X;
 	height = WINDOW_SIZE_Y;	
