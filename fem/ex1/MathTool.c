@@ -334,7 +334,7 @@ void multiMatandMat( Matd *_A, Matd *_B, Matd *_dst )
 		//[TODO1]_dstに_A*_B（行列同士の積）の結果を格納する 
 		//_A->X[ _A->ncol * i + j ]と書くと，i行j列の要素にアクセスできる
 		for (i = 0; i < _A->nrow; i++){
-			for (j = 0; j < _A->ncol; j++){
+			for (j = 0; j < _B->ncol; j++){
 				for (k = 0; k < _A->ncol; k++){
 					_dst->X[_dst->ncol * i + j] += _A->X[_A->ncol * i + k] * _B->X[_B->ncol * k + j];
 				}
@@ -365,6 +365,7 @@ void multiMatandVec3( Matd *_A, Vec3d *_B, VecNd *_dst )
 void multiMatandVecN( Matd *_A, VecNd *_B, VecNd *_dst )
 {
 	unsigned int i, j;
+	//printf("\nkakunin1\n%d, %d", _A->ncol, _B->dim);
 	if( _A->ncol == _B->dim ){
 		if( _dst->dim != _A->nrow){
 			initVecN( _dst );
@@ -372,9 +373,10 @@ void multiMatandVecN( Matd *_A, VecNd *_B, VecNd *_dst )
 		}
 		clearVecN( _dst );
 
+		//printf("kakunin");
 		//[TODO1]_dstに_A*_B（行列とN次元ベクトルの積）の結果を格納する 
 		for (i = 0; i < _dst->dim; i++){
-			for (j = 0; j < _dst->dim; j++){
+			for (j = 0; j < _B->dim; j++){
 				_dst->X[i] += _A->X[_A->ncol * i + j] * _B->X[j];
 			}
 		}

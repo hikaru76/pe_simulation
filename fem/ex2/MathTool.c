@@ -376,7 +376,7 @@ void multiMatandVecN( Matd *_A, VecNd *_B, VecNd *_dst )
 		//printf("kakunin");
 		//[TODO1]_dstに_A*_B（行列とN次元ベクトルの積）の結果を格納する 
 		for (i = 0; i < _dst->dim; i++){
-			for (j = 0; j < _dst->dim; j++){
+			for (j = 0; j < _B->dim; j++){
 				_dst->X[i] += _A->X[_A->ncol * i + j] * _B->X[j];
 			}
 		}
