@@ -32,6 +32,33 @@ void calColorMap(double _value, Vec3d *_color)
 	}
 }
 
+void glDrawArrowd(double x0, double y0, double z0,
+ double x1, double y1, double z1)
+{
+	GLUquadricObj *arrows[2];
+	double x2, y2, z2, len, ang;
+
+	x2 = x1-x0; y2 = y1-y0; z2 = z1-z0;
+	len = sqrt(x2*x2 + y2*y2 + z2*z2);
+	if(len != 0.0){
+		ang = acos(z2*len/(sqrt(x2*x2+y2*y2+z2*z2)*len))/M_PI*180.0;
+
+		glPushMatrix();
+			glTranslated( x0, y0, z0);
+			glRotated( ang, -y2*len, x2*len, 0.0);
+			arrows[0] = gluNewQuadric();
+			gluQuadricDrawStyle(arrows[0], GLU_FILL);
+			gluCylinder(arrows[0], len/80, len/80, len*0.9, 8, 8);
+			glPushMatrix();
+				glTranslated( 0.0, 0.0, len*0.9);
+				arrows[1] = gluNewQuadric();
+				gluQuadricDrawStyle(arrows[1], GLU_FILL);
+				gluCylinder(arrows[1], len/30, 0.0f, len/10, 8, 8);
+			glPopMatrix();
+		glPopMatrix();
+	}
+}
+
 void renderFEMMesh( Mesh *_mesh, double _max_mises_stress )
 {
 	Vec3d color;
@@ -91,6 +118,29 @@ void renderFEMMesh( Mesh *_mesh, double _max_mises_stress )
 			glVertex3dv(_mesh->tetrahedra[i].new_position[(j + 2) % 4].X);
 			glEnd();
 		}
+	}
+
+	//ここから下を自分で付け足した
+	//長さの最長を出す
+	double max_length = 0;
+	double length = 0;
+	for (i = 0; i < _mesh->num_node; i++) {
+		length = sqrt(pow(_mesh->node[i].position.x-_mesh->node[i].new_position.x, 2) + pow(_mesh->node[i].position.y-_mesh->node[i].new_position.y, 2) + pow(_mesh->node[i].position.y-_mesh->node[i].new_position.y, 2));
+		if (max_length < length)
+			max_length = length;
+	}
+
+	//変異ベクトル場の可視化
+	for (i = 0; i < _mesh->num_node; i++) {
+		length = sqrt(pow(_mesh->node[i].position.x-_mesh->node[i].new_position.x, 2) + pow(_mesh->node[i].position.y-_mesh->node[i].new_position.y, 2) + pow(_mesh->node[i].position.y-_mesh->node[i].new_position.y, 2));
+		length /= max_length;
+		double r = length;
+		double g = 1 - length;
+		double b = 1 - length;
+		glLineWidth(1.0);
+		glColor3d(r, g, b);
+		glDrawArrowd(_mesh->node[i].position.x, _mesh->node[i].position.y, _mesh->node[i].position.z,
+						_mesh->node[i].new_position.x, _mesh->node[i].new_position.y, _mesh->node[i].new_position.z);
 	}
 }
 

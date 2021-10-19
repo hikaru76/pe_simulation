@@ -4,7 +4,11 @@ void setMaterialProperty( Mesh *_mesh, double _poisson_ratio, double _young_modu
 {
 	unsigned int i;
 	//全ての要素についてポアッソン比とヤング率を設定
-	for( i = 0; i < _mesh->num_tetrahedra; i ++ ){
+	for( i = 0; i < _mesh->num_tetrahedra / 2; i ++ ){
+		_mesh->tetrahedra[ i ].poisson_ratio = _poisson_ratio;
+		_mesh->tetrahedra[ i ].young_modulus = _young_modulus+40;
+	}
+	for( i = _mesh->num_tetrahedra / 2; i < _mesh->num_tetrahedra; i ++ ){
 		_mesh->tetrahedra[ i ].poisson_ratio = _poisson_ratio;
 		_mesh->tetrahedra[ i ].young_modulus = _young_modulus;
 	}
@@ -371,7 +375,8 @@ int saveDF( Mesh *_mesh, const char *_filename )
 	//[TODO6]
 	//全体変位ベクトル_mesh->deformationと全体剛性行列_mesh->Kから全体力ベクトル_mesh->forceを計算
 	//ファイルfileに節点番号，節点3次元座標，節点3次元変位，節点3次元力を出力する
-	multiMatandMat(&_mesh->K, &_mesh->deformation, &_mesh->force);
+	multiMatandVecN(&_mesh->K, &_mesh->deformation, &_mesh->force);
+	//printMat(&_mesh->deformation);
 	for (i = 0; i < _mesh->num_node; i++) {
 		fprintf( file, "%d,%f,%f,%f,%f,%f,%f,%f,%f,%f\n", i,
 		_mesh->node[i].position.x, _mesh->node[i].position.y, _mesh->node[i].position.z,

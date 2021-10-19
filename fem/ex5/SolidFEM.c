@@ -4,7 +4,11 @@ void setMaterialProperty( Mesh *_mesh, double _poisson_ratio, double _young_modu
 {
 	unsigned int i;
 	//全ての要素についてポアッソン比とヤング率を設定
-	for( i = 0; i < _mesh->num_tetrahedra; i ++ ){
+	for( i = 0; i < int(_mesh->num_tetrahedra / 2); i ++ ){
+		_mesh->tetrahedra[ i ].poisson_ratio = _poisson_ratio;
+		_mesh->tetrahedra[ i ].young_modulus = _young_modulus+40;
+	}
+	for( i = int(_mesh->num_tetrahedra / 2); i < _mesh->num_tetrahedra; i ++ ){
 		_mesh->tetrahedra[ i ].poisson_ratio = _poisson_ratio;
 		_mesh->tetrahedra[ i ].young_modulus = _young_modulus;
 	}

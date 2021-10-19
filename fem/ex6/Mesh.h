@@ -7,7 +7,7 @@
 #include <math.h>
 #include "MathTool.h"
 
-#define TOLERANCE 1E-24
+#define TOLERANCE 1E-12
 
 enum{
 	NODE_FREE,
